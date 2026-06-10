@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eryn - Product Experience Designer</title>
+<style>
+/* ================= 全局变量与重置 ================= */
+:root {
+    --bg-color: #3e1014;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --text-main: #FFFFFF;
+    --text-sec: rgba(255, 255, 255, 0.6);
+    --accent: #ff4d4d;
+    --border: rgba(255, 255, 255, 0.08);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-main);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ================= 侧边栏导航 ================= */
+.sidebar {
+    position: fixed; left: 0; top: 0; width: 120px; height: 100vh;
+    background: rgba(62, 16, 20, 0.8);
+    backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center;
+    border-right: 1px solid var(--border);
+    z-index: 99;
+}
+
+.menu { display: flex; flex-direction: column; gap: 32px; }
+
+.menu a {
+    color: var(--text-sec);
+    text-decoration: none;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 1px;
+    transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    padding-left: 20px;
+}
+
+.menu a.active {
+    color: var(--text-main);
+    transform: translateX(8px);
+}
+
+.menu a.active:before {
+    content: ''; position: absolute; left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+}
+
+/* ================= 主内容区 ================= */
+.main { margin-left: 120px; }
+
+section {
+    height: 100vh; scroll-snap-align: start;
+    padding: 80px 100px;
+    display: flex; align-items: center; position: relative;
+}
+
+/* ================= 首屏 Hero (全屏背景图) ================= */
+#home {
+    background-image: url('./images/bb92060a-c60a-48b3-b792-ec6a5a50d3c5.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+#home::before {
+    content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, rgba(20,5,8,0.9) 0%, rgba(20,5,8,0.3) 50%, rgba(20,5,8,0) 100%);
+    z-index: 1;
+}
+.hero-layout { 
+    display: flex; width: 100%; max-width: 1200px; margin: 0 auto; align-items: center; 
+}
+.hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+.hero-label { font-size: 14px; color: var(--accent); font-weight: 600; letter-spacing: 4px; margin-bottom: 24px; text-transform: uppercase; }
+.hero-title { font-size: 76px; font-weight: 800; line-height: 1.15; letter-spacing: -1px; margin-bottom: 30px; }
+.hero-title span { display: block; -webkit-text-stroke: 2px #fff; color: transparent; font-weight: 300; margin-bottom: 16px; }
+.hero-desc { font-size: 18px; line-height: 1.8; color: var(--text-sec); max-width: 500px; margin-top: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+/* ================= 探索网格排版 ================= */
+.explore-grid { display: grid; gap: 20px; }
+.grid-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 28px 24px;
+    cursor: pointer; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+}
+.grid-card:hover {
+    background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2);
+    transform: translateY(-6px); box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+.icon-box {
+    width: 40px; height: 40px; border-radius: 12px; background: rgba(255,77,77,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px; color: var(--accent);
+}
+.grid-card h4 { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+.grid-card p { font-size: 13px; color: var(--text-sec); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.grid-card .arrow {
+    position: absolute; right: 24px; bottom: 24px;
+    font-size: 16px; color: var(--text-sec); transition: 0.3s;
+}
+.grid-card:hover .arrow { color: var(--accent); transform: translateX(6px); }
+
+/* ================= 运营视觉大卡片 ================= */
+.large-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 30px; padding: 20px;
+    cursor: pointer; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; overflow: hidden; display: flex; flex-direction: column;
+}
+.large-card:hover {
+    background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15);
+    transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+/* 修改为 4:3 自适应尺寸，防止图片变形或被强制拉伸 */
+.large-card-img {
+    width: 100%; aspect-ratio: 4 / 3; height: auto; 
+    border-radius: 20px; margin-bottom: 24px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); transition: 0.4s;
+    overflow: hidden; 
+}
+.large-card:hover .large-card-img img { transform: scale(1.02); }
+.large-card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+
+.large-card-content { flex: 1; display: flex; flex-direction: column; padding: 0 4px; text-align: left; }
+.large-card h4 { font-size: 22px; font-weight: 700; margin-bottom: 12px; color: #fff; letter-spacing: 0.5px; }
+.large-card p { font-size: 14px; color: var(--text-sec); line-height: 1.6; margin-bottom: 24px; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.large-card-btn {
+    width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05);
+    display: flex; align-items: center; justify-content: center; color: var(--text-sec);
+    font-size: 16px; transition: 0.3s;
+}
+.large-card:hover .large-card-btn { background: var(--accent); color: #fff; transform: translateX(4px); }
+
+/* ================= 多图全屏滚动查看器 Modal ================= */
+.image-viewer {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(10px);
+    z-index: 2000; opacity: 0; pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.image-viewer.active { opacity: 1; pointer-events: auto; }
+.viewer-close {
+    position: absolute; top: 30px; right: 40px;
+    width: 48px; height: 48px; border-radius: 24px;
+    background: rgba(255,255,255,0.1); color: white; border: none;
+    font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: 0.3s; z-index: 2001;
+}
+.viewer-close:hover { background: var(--accent); transform: scale(1.1); }
+.viewer-content {
+    width: 90%; max-width: 1400px; height: 90vh;
+    border-radius: 12px; overflow-y: auto; overflow-x: hidden;
+    background: #111; 
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    transform: scale(0.95); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    scrollbar-width: none;
+}
+.viewer-content::-webkit-scrollbar { display: none; }
+.image-viewer.active .viewer-content { transform: scale(1); }
+.viewer-content img { width: 100%; height: auto; display: block; }
+
+/* 下载按钮组 */
+.download-group { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 40px; }
+.download-btn {
+    display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; 
+    background: #fff; color: #000; text-decoration: none; border-radius: 40px; 
+    font-weight: 700; font-size: 14px; transition: 0.3s; 
+    box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+}
+.download-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255,255,255,0.2); }
+
+/* ================= 详情介绍区域 (产品化标签呈现 - 高度压缩版) ================= */
+.product-intro-wrapper {
+    display: grid; grid-template-columns: 5.5fr 4.5fr; gap: 50px; 
+    width: 100%; max-width: 1200px; margin: 0 auto 36px auto; align-items: center;
+}
+.intro-text-block h2 { font-size: 42px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; letter-spacing: -1px; }
+.intro-text-block h3 { font-size: 18px; color: var(--text-sec); font-weight: 400; margin-bottom: 24px; letter-spacing: 1px; }
+
+.feature-tags-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.f-tag-card { 
+    display: flex; align-items: flex-start; gap: 12px; 
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); 
+    padding: 14px; border-radius: 14px; transition: 0.3s;
+}
+.f-tag-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,154,68,0.3); transform: translateY(-2px); }
+.f-tag-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,154,68,0.1); color: #ff9a44; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.f-tag-title { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.f-tag-desc { font-size: 11px; color: var(--text-sec); line-height: 1.4; }
+
+.role-info { display: flex; gap: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+.role-item p:first-child { font-size: 12px; color: var(--text-sec); margin-bottom: 4px; }
+.role-item p:last-child { font-size: 14px; font-weight: 600; color: #fff; }
+
+.mockup-container {
+    position: relative; width: 100%; height: 420px; 
+    display: flex; align-items: center; justify-content: center;
+}
+/* 手机样机缩小 */
+.mockup-box {
+    width: 220px; height: 460px; border-radius: 40px; border: 2px dashed rgba(255,255,255,0.2);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); position: relative; z-index: 2;
+    text-align: center; color: var(--text-sec); font-size: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.mockup-box img { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; border-radius: 36px; }
+
+/* 桌面端样机缩小 */
+.mockup-box-desktop {
+    width: 440px; height: 280px; border-radius: 16px; border: 2px dashed rgba(255,255,255,0.2);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); position: relative; z-index: 2;
+    text-align: center; color: var(--text-sec); font-size: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    animation: float 6s ease-in-out infinite;
+}
+.mockup-box-desktop img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; border-radius: 14px; }
+
+/* 背景光晕 */
+.mockup-glow {
+    position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,154,68,0.15) 0%, transparent 70%);
+    filter: blur(40px); z-index: 1; pointer-events: none;
+}
+.mockup-glow-blue {
+    position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(79,172,254,0.15) 0%, transparent 70%);
+    filter: blur(50px); z-index: 1; pointer-events: none;
+}
+
+/* 临场感悬浮 UI 卡片 */
+.float-card {
+    position: absolute; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
+    padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4); z-index: 10;
+    animation: float-alt 5s ease-in-out infinite;
+}
+.fc-left { bottom: 15%; left: -50px; animation-delay: -1s; }
+.fc-right { top: 20%; right: -50px; animation-delay: -2s; }
+@keyframes float-alt {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+@media (max-width: 1024px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    section { padding: 60px 40px; height: auto; min-height: 100vh; }
+    .hero-layout { justify-content: center; text-align: center; }
+    .hero-content { align-items: center; text-align: center; }
+    #home::before { background: linear-gradient(0deg, #1a0508 0%, rgba(26,5,8,0.5) 100%); }
+    .explore-grid { grid-template-columns: 1fr !important; }
+    
+    .product-intro-wrapper { grid-template-columns: 1fr; gap: 30px; text-align: center; margin-bottom: 30px; }
+    .intro-text-block { display: flex; flex-direction: column; align-items: center; }
+    .feature-tags-grid { grid-template-columns: 1fr; width: 100%; }
+    .f-tag-card { text-align: left; }
+    .role-info { justify-content: center; }
+    .mockup-container { height: 380px; margin-top: 30px; }
+    .mockup-box-desktop { width: 100%; height: 240px; }
+    .fc-left { left: 0px; bottom: 10%; transform: scale(0.85); transform-origin: left bottom; }
+    .fc-right { right: 0px; top: 10%; transform: scale(0.85); transform-origin: right top; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="menu">
+        <a href="#home" class="nav-link active">HOME</a>
+        <a href="#mobile" class="nav-link">C端创新</a>
+        <a href="#backend" class="nav-link">B端重构</a>
+        <a href="#operation" class="nav-link">运营设计</a>
+        <a href="#about" class="nav-link">ABOUT</a>
+    </div>
+</div>
+
+<div class="main">
+    <!-- 首屏：全新全屏背景视觉 -->
+    <section id="home">
+        <div class="hero-layout">
+            <div class="hero-content">
+                <div class="hero-label">UI / UX DESIGN PORTFOLIO</div>
+                <h1 class="hero-title"><span>体验驱动增长</span>让设计真正服务业务。</h1>
+                <p class="hero-desc">
+                    我是 Eryn，一名专注于 UI / UX 与产品体验设计的设计师。<br>
+                    拥有 C 端产品、B 端系统与运营视觉项目经验，擅长从业务目标出发，通过用户体验、信息结构与视觉语言提升产品效率与用户感知。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目一：尾伴 (C端) -> 高度压缩版 -->
+    <section id="mobile" style="flex-direction: column; justify-content: center; align-items: center; height: auto; min-height: 100vh; padding-top: 60px; padding-bottom: 40px;">
+        
+        <!-- 上半部分：标签化产品介绍与样机呈现 -->
+        <div class="product-intro-wrapper">
+            <!-- 左侧文本与标签 -->
+            <div class="intro-text-block">
+                <!-- App Logo 植入位置 -->
+                <div style="margin-bottom: 16px;">
+                    <img src="./images/tailogic-logo.png" alt="Tailogic Logo" style="height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iNDIiPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNDIiIGZpbGw9InRyYW5zcGFyZW50Ii8+PHRleHQgeD0iMCIgeT0iMjgiIGZpbGw9IiNmZmYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCI+VEFJTE9HSUM8L3RleHQ+PC9zdmc+'">
+                </div>
+                
+                <!-- 类别标签 -->
+                <span style="display: inline-block; padding: 6px 14px; border-radius: 20px; background: rgba(255,154,68,0.1); color: #ff9a44; font-size: 11px; font-weight: 600; margin-bottom: 16px;">
+                    <span style="display: inline-block; width: 6px; height: 6px; background: #ff9a44; border-radius: 50%; margin-right: 6px; transform: translateY(-1px);"></span>
+                    C端产品设计 / UIUX Design
+                </span>
+                
+                <h2>尾伴 Tailogic |<br>宠物一站式 C 端 App</h2>
+                <h3>UI / UX 体验设计方案</h3>
+                
+                <!-- 功能特性四宫格标签 -->
+                <div class="feature-tags-grid">
+                    <div class="f-tag-card">
+                        <div class="f-tag-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        </div>
+                        <div>
+                            <div class="f-tag-title">AI 养宠顾问</div>
+                            <div class="f-tag-desc">多模态识别与健康初诊</div>
+                        </div>
+                    </div>
+                    <div class="f-tag-card">
+                        <div class="f-tag-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        </div>
+                        <div>
+                            <div class="f-tag-title">IoT 设备中枢</div>
+                            <div class="f-tag-desc">多品牌设备统一管理</div>
+                        </div>
+                    </div>
+                    <div class="f-tag-card">
+                        <div class="f-tag-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <div>
+                            <div class="f-tag-title">本地口碑服务</div>
+                            <div class="f-tag-desc">严选医疗与美容资源</div>
+                        </div>
+                    </div>
+                    <div class="f-tag-card">
+                        <div class="f-tag-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3.1-9-7.56c0-1.25.5-2.4 1.1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z"/><path d="M8 14v.5"/><path d="M16 14v.5"/><path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/></svg>
+                        </div>
+                        <div>
+                            <div class="f-tag-title">尾宝IP情感化</div>
+                            <div class="f-tag-desc">有温度的陪伴体验</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部负责角色 -->
+                <div class="role-info">
+                    <div class="role-item">
+                        <p>项目</p>
+                        <p>C端APP</p>
+                    </div>
+                    <div class="role-item">
+                        <p>负责模块</p>
+                        <p>视觉设计 / 部分交互</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧样机与悬浮气泡 -->
+            <div class="mockup-container">
+                <div class="mockup-glow"></div>
+                
+                <!-- 悬浮 UI 提示卡片 1 -->
+                <div class="float-card fc-left">
+                    <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(74, 222, 128, 0.2); color: #4ade80; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size: 10px; color: var(--text-sec); margin-bottom: 2px;">今日健康打卡</div>
+                        <div style="font-size: 12px; font-weight: 700; color: #fff;">完成度 100%</div>
+                    </div>
+                </div>
+
+                <!-- 悬浮 UI 提示卡片 2 -->
+                <div class="float-card fc-right">
+                    <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(255, 171, 0, 0.2); color: #ffab00; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size: 10px; color: var(--text-sec); margin-bottom: 2px;">智能喂食器</div>
+                        <div style="font-size: 12px; font-weight: 700; color: #fff;">余粮不足 10%</div>
+                    </div>
+                </div>
+
+                <!-- 手机壳与切图 (缩小了尺寸以防超出) -->
+                <div class="mockup-box">
+                    <span style="font-weight: bold; margin-bottom: 8px; color: #fff;">[ 首页切图预留位 ]</span>
+                    <span style="opacity: 0.6; padding: 0 20px;">请将透明底的手机UI界面命名为<br>c-home-mockup.png 放入 images 文件夹</span>
+                    <img src="./images/c-home-mockup.png" onload="this.previousElementSibling.style.display='none'; this.previousElementSibling.previousElementSibling.style.display='none';" onerror="this.style.display='none'">
+                </div>
+            </div>
+        </div>
+        
+        <!-- 下半部分：探索三列网格 -->
+        <div class="explore-grid" style="width: 100%; max-width: 1200px; grid-template-columns: repeat(3, 1fr);">
+            <div class="grid-card" onclick="openImages(['./images/page_05.png','./images/page_06.png','./images/page_07.png','./images/page_08.png','./images/page_09.png','./images/page_10.png','./images/page_11.png','./images/page_12.png','./images/page_13.png','./images/page_14.png','./images/page_15.png','./images/page_16.png','./images/page_17.png'])">
+                <div class="icon-box" style="background: rgba(255,154,68,0.1); color: #ff9a44;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+                <h4>用户研究与需求分析</h4>
+                <p>通过访谈与场景梳理，明确核心用户需求与体验痛点。</p>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            </div>
+            <div class="grid-card" onclick="openImages(['./images/page_26.png','./images/page_27.png','./images/page_28.png','./images/page_29.png','./images/page_30.png'])">
+                <div class="icon-box" style="background: rgba(255,154,68,0.1); color: #ff9a44;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg></div>
+                <h4>核心体验流程设计</h4>
+                <p>围绕用户路径优化信息结构与关键交互，提升流畅度。</p>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            </div>
+            <div class="grid-card" onclick="openImages(['./images/page_18.png','./images/page_19.png','./images/page_20.png','./images/page_21.png','./images/page_22.png','./images/page_23.png','./images/page_24.png','./images/page_25.png'])">
+                <div class="icon-box" style="background: rgba(255,154,68,0.1); color: #ff9a44;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+                <h4>视觉规范与组件体系</h4>
+                <p>统一品牌视觉语言，搭建组件化设计规范，提高落地效率。</p>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目二：邻里智选 (B端) -> 高度压缩版 -->
+    <section id="backend" style="flex-direction: column; justify-content: center; align-items: center; height: auto; min-height: 100vh; padding-top: 60px; padding-bottom: 40px;">
+        
+        <!-- 上半部分：B端专属产品介绍与全息样机 -->
+        <div class="product-intro-wrapper">
+            <!-- 左侧文本 -->
+            <div class="intro-text-block" style="align-items: flex-start; text-align: left;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <div style="width: 32px; height: 32px; background: #002140; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                        <img src="./images/scrm-logo.png" alt="SCRM Logo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTUgMTBsMy41LTEuNVYyMEg1ek0xMC41IDVsMy41LTEuNVYyMGgtMy41ek0xNiAxMWwzLjUtMS41VjIwSDE2eiIvPjwvc3ZnPg=='">
+                    </div>
+                    <span style="font-size: 16px; font-weight: 700; letter-spacing: 1px;">邻里智选 SCRM</span>
+                </div>
+
+                <span style="display: inline-block; padding: 6px 14px; border-radius: 20px; background: rgba(79,172,254,0.1); color: #4facfe; font-size: 11px; font-weight: 600; margin-bottom: 16px;">
+                    <span style="display: inline-block; width: 6px; height: 6px; background: #4facfe; border-radius: 50%; margin-right: 6px; transform: translateY(-1px);"></span>
+                    B端系统设计 / SCRM重构
+                </span>
+
+                <h2 style="line-height: 1.3; margin-bottom: 16px;">邻里智选 SCRM |<br>系统改版升级</h2>
+
+                <p style="font-size: 13px; line-height: 1.8; color: var(--text-sec); margin-bottom: 24px; max-width: 90%;">当前物业行业正从“管理物”向“服务人”转型。在传统的物业管理模式下，积累了海量的住户基础数据（房号、面积、家庭结构），但这些数据沉睡在ERP中。与此同时，多种经营业务（到家服务、社区团购）面临获客难、留存难的问题。</p>
+
+                <!-- 特色标签 -->
+                <div style="display: flex; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
+                    <div style="font-size: 14px; font-weight: 600; color: #4facfe; letter-spacing: 1px;">资产数字化</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #4facfe; letter-spacing: 1px;">内容智能化</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #4facfe; letter-spacing: 1px;">转化平滑化</div>
+                </div>
+
+                <div class="role-info" style="width: 100%;">
+                    <div class="role-item">
+                        <p>项目</p>
+                        <p>B端SCRM系统</p>
+                    </div>
+                    <div class="role-item">
+                        <p>负责模块</p>
+                        <p>体验重构 / 设计规范</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧样机 (Desktop缩小以防超出) -->
+            <div class="mockup-container">
+                <div class="mockup-glow-blue"></div>
+
+                <!-- B端悬浮气泡 1 -->
+                <div class="float-card fc-left" style="background: rgba(79, 172, 254, 0.08); border-color: rgba(79, 172, 254, 0.15);">
+                    <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(79, 172, 254, 0.2); color: #4facfe; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size: 10px; color: var(--text-sec); margin-bottom: 2px;">数据同步</div>
+                        <div style="font-size: 12px; font-weight: 700; color: #fff;">100% 完成</div>
+                    </div>
+                </div>
+
+                <!-- B端悬浮气泡 2 -->
+                <div class="float-card fc-right" style="background: rgba(79, 172, 254, 0.08); border-color: rgba(79, 172, 254, 0.15); top: 15%;">
+                    <div style="width: 22px; height: 22px; border-radius: 50%; background: rgba(79, 172, 254, 0.2); color: #4facfe; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size: 10px; color: var(--text-sec); margin-bottom: 2px;">组件规范</div>
+                        <div style="font-size: 12px; font-weight: 700; color: #fff;">已全局生效</div>
+                    </div>
+                </div>
+
+                <!-- 桌面端切图预留 -->
+                <div class="mockup-box-desktop">
+                    <span style="font-weight: bold; margin-bottom: 8px; color: #fff;">[ B端首页切图预留位 ]</span>
+                    <span style="opacity: 0.6; padding: 0 20px;">请将桌面端UI界面命名为<br>b-home-mockup.png 放入 images 文件夹</span>
+                    <img src="./images/b-home-mockup.png" onload="this.previousElementSibling.style.display='none'; this.previousElementSibling.previousElementSibling.style.display='none';" onerror="this.style.display='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- 下半部分：探索四宫格网格 -->
+        <div class="explore-grid" style="width: 100%; max-width: 1200px; grid-template-columns: repeat(4, 1fr);">
+            <div class="grid-card" onclick="openImages(['./images/page_31.png','./images/page_32.png','./images/page_33.png','./images/page_34.png','./images/page_35.png'])">
+                <div class="icon-box" style="background: rgba(79,172,254,0.1); color: #4facfe;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                <h4>业务背景分析</h4>
+                <p>梳理业务链路与商户运营场景，明确升级核心目标。</p>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            </div>
+            <div class="grid-card" onclick="openImages(['./images/page_36.png','./images/page_37.png','./images/page_38.png','./images/page_39.png','./images/page_40.png','./images/page_41.png','./images/page_42.png','./images/page_43.png','./images/page_44.png','./images/page_45.png'])">
+                <div class="icon-box" style="background: rgba(79,172,254,0.1); color: #4facfe;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+                <h4>业务流程优化</h4>
+                <p>优化高频操作路径与信息结构，降低系统学习成本。</p>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            </div>
+            <div class="grid-card" onclick="openImages(['./images/page_46.png','./images/page_47.png','./images/page_48.png'])">
+                <div class="icon-box" style="background: rgba(79,172,254,0.1); color: #4facfe;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+                <h4>设计系统规范</h4>
+                <p>建立统一组件体系，提升设计一致性与开发协作效率。</p>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            </div>
+            <div class="grid-card" onclick="openImages(['./images/page_49.png'])">
+                <div class="icon-box" style="background: rgba(79,172,254,0.1); color: #4facfe;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
+                <h4>项目成果复盘</h4>
+                <p>结合实际业务反馈，对系统体验优化效果进行验证总结。</p>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目三：运营设计 -->
+    <section id="operation" style="flex-direction: column; justify-content: center; align-items: center;">
+        
+        <div class="project-info" style="max-width: 800px; text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 48px; letter-spacing: 1px; margin-bottom: 16px;">运营与品牌视觉设计</h2>
+            <p class="tags" style="justify-content: center; display: flex;">Brand Identity / IP Design / Visual Campaign</p>
+            <p class="desc" style="max-width: 660px; margin: 0 auto; color: var(--text-sec);">负责品牌视觉、活动运营与IP延展等方向设计，围绕用户情绪与活动目标打造更具传播力与转化力的视觉体验。</p>
+        </div>
+        
+        <!-- 底部大卡片预览区 (4:3比例自适应封面) -->
+        <div class="explore-grid" style="width: 100%; max-width: 1100px; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+            <!-- 卡片 1 -->
+            <div class="large-card" onclick="openImages(['./images/51.png', './images/52.png', './images/53.png', './images/54.png', './images/55.png', './images/56.png', './images/57.png', './images/58.png', './images/59.png'])">
+                <div class="large-card-img">
+                    <img src="./images/VI封面.png" alt="品牌视觉" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
+                </div>
+                <div class="large-card-content">
+                    <h4>品牌视觉升级</h4>
+                    <p>围绕品牌调性与用户认知，建立更统一、更具辨识度的品牌视觉语言。</p>
+                    <div class="large-card-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+                </div>
+            </div>
+            <!-- 卡片 2 -->
+            <div class="large-card" onclick="openImages(['./images/60.png', './images/61.png', './images/62.png', './images/63.png', './images/64.png', './images/65.png'])">
+                <div class="large-card-img">
+                    <img src="./images/IP封面.png" alt="IP形象" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
+                </div>
+                <div class="large-card-content">
+                    <h4>IP与角色设计</h4>
+                    <p>通过IP形象与场景化延展，增强产品情绪表达与用户记忆点。</p>
+                    <div class="large-card-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+                </div>
+            </div>
+            <!-- 卡片 3 -->
+            <div class="large-card" onclick="openImages(['./images/66.png', './images/67.png', './images/68.png', './images/69.png', './images/70.png', './images/71.png'])">
+                <div class="large-card-img">
+                    <img src="./images/H5封面.png" alt="运营视觉" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
+                </div>
+                <div class="large-card-content">
+                    <h4>活动运营视觉</h4>
+                    <p>负责活动主视觉与运营包装设计，提升活动氛围感与用户参与转化。</p>
+                    <div class="large-card-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+                </div>
+            </div>
+        </div>
+        
+    </section>
+
+    <!-- 关于我 / 联系页 -->
+    <section id="about" style="align-items: center;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; width: 100%; max-width: 1200px; margin: 0 auto; padding-top: 40px;">
+            
+            <!-- 左侧：个人描述 -->
+            <div style="position: relative;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 40px;">
+                    <div style="width: 54px; height: 54px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 20px;">E.</div>
+                    <span style="font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--text-sec);">PORTFOLIO 2026</span>
+                </div>
+                
+                <h2 style="font-size: 64px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; letter-spacing: -2px;">关于我<br><span style="position: relative; display: inline-block;">About Me<span style="position: absolute; bottom: 8px; left: 0; width: 100%; height: 8px; background: var(--accent); z-index: -1; opacity: 0.6;"></span></span></h2>
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--text-main); margin-bottom: 40px;">UI / UX Designer <span style="color: var(--accent);">•</span> Product Experience</h3>
+                
+                <p style="font-size: 14px; line-height: 1.8; color: var(--text-sec); margin-bottom: 24px; max-width: 460px;">
+                    拥有多端产品设计与运营视觉经验，参与过 C 端产品、B 端系统及品牌运营等多个方向项目。<br><br>
+                    擅长从业务目标与用户需求出发，通过信息架构、交互体验与视觉表达，提升产品体验与设计价值落地。
+                </p>
+                <p style="font-size: 14px; line-height: 1.8; color: var(--text-sec); margin-bottom: 50px;">
+                    期待与优秀团队共同打磨更有价值的产品体验。
+                </p>
+                
+                <!-- 下载按钮组 -->
+                <div class="download-group">
+                    <a href="./郭若淳UIUX作品集.pdf" target="_blank" class="download-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg> 下载完整作品集 PDF
+                    </a>
+                    <a href="./郭若淳_UIUX设计师简历_5年_.pdf" target="_blank" class="download-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> 查看设计师简历
+                    </a>
+                </div>
+            </div>
+
+            <!-- 右侧：联系方式卡片 -->
+            <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px; position: relative;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-sec); letter-spacing: 2px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 6px; height: 6px; background: var(--accent); border-radius: 50%;"></div>
+                    CONTACT ME
+                </div>
+
+                <!-- 邮箱卡片 -->
+                <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 24px 32px; display: flex; align-items: center; gap: 24px; transition: 0.3s; backdrop-filter: blur(10px);">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    </div>
+                    <div>
+                        <p style="font-size: 12px; color: var(--text-sec); margin-bottom: 4px;">电子邮箱 Email</p>
+                        <p style="font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">269809965@qq.com</p>
+                    </div>
+                </div>
+
+                <!-- 电话卡片 -->
+                <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 24px 32px; display: flex; align-items: center; gap: 24px; transition: 0.3s; backdrop-filter: blur(10px);">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </div>
+                    <div>
+                        <p style="font-size: 12px; color: var(--text-sec); margin-bottom: 4px;">联系电话 Phone</p>
+                        <p style="font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">18621981910</p>
+                    </div>
+                </div>
+
+                <!-- 微信卡片 -->
+                <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; transition: 0.3s; backdrop-filter: blur(10px); position: relative;" id="wechat-card">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                        </div>
+                        <div>
+                            <p style="font-size: 12px; color: var(--text-sec); margin-bottom: 4px;">微信 WeChat</p>
+                            <p style="font-size: 20px; font-weight: 700; letter-spacing: 0.5px;" id="wechat-id">Eryn_Guo</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 悬浮操作按钮 -->
+                    <button id="wechat-btn" onclick="copyWechat()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text-sec); padding: 8px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px;">
+                        悬浮扫码 / 复制 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-1px"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    </button>
+
+                    <!-- 悬浮二维码弹窗 (默认隐藏) -->
+                    <div id="qr-popup" style="position: absolute; right: 0; bottom: 110%; background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transform: translateY(10px); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                        <!-- 使用新的二维码图片: IMG_0140.jpg -->
+                        <div style="width: 140px; height: 140px; background: #eee; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #999; overflow: hidden;">
+                             <img src="./images/IMG_0140.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="WeChat QR" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlZWVlZWUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iIzk5OTk5OSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOS6jOe7tOeggSBdPC90ZXh0Pjwvc3ZnPg=='">
+                        </div>
+                        <p style="font-size: 12px; color: #333; font-weight: 600;">扫一扫添加好友</p>
+                        
+                        <!-- 小尖角 -->
+                        <div style="position: absolute; bottom: -8px; right: 60px; width: 16px; height: 16px; background: #fff; transform: rotate(45deg);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部版权 -->
+        <div style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 1px; text-transform: uppercase;">
+            © 2026 DESIGNED WITH PASSION & LOGIC.
+        </div>
+    </section>
+</div>
+
+<!-- ================= 多图全屏滚动查看器 Modal ================= -->
+<div class="image-viewer" id="image-viewer">
+    <button class="viewer-close" onclick="closeImage()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <!-- 图片将被 JS 动态插入到这个容器中 -->
+    <div class="viewer-content" id="viewer-content"></div>
+</div>
+
+<script>
+// ================= 导航高亮逻辑 =================
+const sections = document.querySelectorAll("section");
+const navLinks = document.querySelectorAll(".nav-link");
+window.addEventListener("scroll", () => {
+    let current = "";
+    sections.forEach(section => {
+        const top = section.offsetTop;
+        const height = section.clientHeight;
+        if(scrollY >= top - height / 3) current = section.getAttribute("id");
+    });
+    navLinks.forEach(link => {
+        link.classList.remove("active");
+        if(link.getAttribute("href") === "#" + current) link.classList.add("active");
+    });
+});
+
+// ================= 全局多图滚动查看器逻辑 =================
+function openImages(imageArray) {
+    if (!imageArray || imageArray.length === 0) {
+        alert("该模块暂未上传演示图片");
+        return;
+    }
+
+    const viewer = document.getElementById('image-viewer');
+    const content = document.getElementById('viewer-content');
+    
+    // 清空上次加载的图片
+    content.innerHTML = '';
+    
+    // 动态生成并插入图片数组，增加加载失败占位方案
+    imageArray.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = "Portfolio Detail";
+        img.onerror = function() {
+            this.onerror = null; // 防止无限循环
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjQwMHB4Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjIyIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM2NjYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+WyDlnLrop4Xlm77niYfkuI3lrZjmraQv6Lev5b6E6ZSZ6K+vIF08L3RleHQ+PC9zdmc+';
+        };
+        content.appendChild(img);
+    });
+    
+    // 显示查看器并锁定背景滚动
+    viewer.classList.add('active');
+    document.body.style.overflow = 'hidden'; 
+    
+    // 每次打开确保滚动条回到最顶部
+    content.scrollTop = 0;
+}
+
+function closeImage() {
+    document.getElementById('image-viewer').classList.remove('active');
+    document.body.style.overflow = 'auto'; // 恢复背景滚动
+}
+
+// ================= 微信悬浮卡片与复制逻辑 =================
+const wechatBtn = document.getElementById('wechat-btn');
+const qrPopup = document.getElementById('qr-popup');
+const wechatIdText = document.getElementById('wechat-id').innerText;
+
+wechatBtn.addEventListener('mouseenter', () => {
+    qrPopup.style.opacity = '1';
+    qrPopup.style.pointerEvents = 'auto';
+    qrPopup.style.transform = 'translateY(0)';
+    wechatBtn.style.color = '#fff';
+    wechatBtn.style.borderColor = '#fff';
+});
+
+wechatBtn.addEventListener('mouseleave', () => {
+    qrPopup.style.opacity = '0';
+    qrPopup.style.pointerEvents = 'none';
+    qrPopup.style.transform = 'translateY(10px)';
+    wechatBtn.style.color = 'var(--text-sec)';
+    wechatBtn.style.borderColor = 'rgba(255,255,255,0.2)';
+});
+
+function copyWechat() {
+    const tempInput = document.createElement("input");
+    tempInput.value = wechatIdText;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    
+    const originalHTML = wechatBtn.innerHTML;
+    wechatBtn.innerHTML = '<span style="display:flex;align-items:center;gap:6px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 复制成功</span>';
+    wechatBtn.style.color = "#4ade80"; 
+    wechatBtn.style.borderColor = "#4ade80";
+    
+    setTimeout(() => {
+        wechatBtn.innerHTML = originalHTML;
+        wechatBtn.style.color = "var(--text-sec)";
+        wechatBtn.style.borderColor = "rgba(255,255,255,0.2)";
+    }, 2000);
+}
+</script>
+
+</body>
+</html>
