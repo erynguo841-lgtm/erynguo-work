@@ -92,7 +92,14 @@ section {
 .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
 .hero-label { font-size: 14px; color: var(--accent); font-weight: 600; letter-spacing: 4px; margin-bottom: 24px; text-transform: uppercase; }
 .hero-title { font-size: 76px; font-weight: 800; line-height: 1.15; letter-spacing: -1px; margin-bottom: 30px; }
-.hero-title span { display: block; -webkit-text-stroke: 2px #fff; color: transparent; font-weight: 300; margin-bottom: 16px; }
+.hero-title span { 
+    display: block; 
+    color: #ffffff; /* 【新增】把文字颜色改回纯白实心 */
+    font-weight: 900; 
+    margin-bottom: 16px; 
+    letter-spacing: 2px; 
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4); /* 【新增】加上了一层柔和的背景阴影，防止在明亮的背景图上看不清文字 */
+}
 .hero-desc { font-size: 18px; line-height: 1.8; color: var(--text-sec); max-width: 500px; margin-top: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
 /* ================= 探索网格排版 ================= */
