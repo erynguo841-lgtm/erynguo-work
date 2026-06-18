@@ -67,7 +67,7 @@ body {
     display: none; position: fixed; bottom: 0; left: 0; width: 100%;
     background: rgba(40, 10, 14, 0.9);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border); z-index: 999; /* 提高层级防止被遮挡 */
+    border-top: 1px solid var(--border); z-index: 999;
     padding-bottom: env(safe-area-inset-bottom);
 }
 .mobile-nav-inner { display: flex; justify-content: space-around; align-items: center; height: 60px; }
@@ -80,16 +80,15 @@ body {
 /* ================= 主内容区及 Section ================= */
 .main { margin-left: 120px; }
 
-/* 关键修复：恢复严格的 100vh 满屏限制，通过 flex 自动居中对齐内容 */
 section {
     height: 100vh;
-    height: 100dvh; /* 适配手机浏览器动态高度，避开底部原生导航栏遮挡 */
+    height: 100dvh;
     width: 100%;
     scroll-snap-align: start;
     padding: 0 80px;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     position: relative;
-    overflow: hidden; /* 防止内容串门重叠 */
+    overflow: hidden; 
 }
 
 /* ================= 首屏 Hero ================= */
@@ -108,7 +107,7 @@ section {
 .hero-title span { display: block; color: #ffffff; font-weight: 900; margin-bottom: 12px; letter-spacing: 1px; text-shadow: 0 4px 20px rgba(0,0,0,0.4); }
 .hero-desc { font-size: 16px; line-height: 1.8; color: var(--text-sec); font-weight: 400; max-width: 480px; margin-top: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); letter-spacing: 0.5px;}
 
-/* ================= 探索网格排版 (统一缩小间距与字号) ================= */
+/* ================= 探索网格排版 ================= */
 .grid-wrap { width: 100%; max-width: 1100px; margin: 0 auto; }
 .explore-grid { display: grid; gap: 16px; }
 .grid-3-col { grid-template-columns: repeat(3, 1fr); }
@@ -142,7 +141,7 @@ section {
 .large-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); transform: translateY(-6px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
 .large-card-img { width: 100%; aspect-ratio: 4 / 3; height: auto; border-radius: 12px; margin-bottom: 16px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); transition: 0.4s; overflow: hidden; }
 .large-card:hover .large-card-img img { transform: scale(1.02); }
-.large-card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+.large-card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; background: #222; }
 .large-card-content { flex: 1; display: flex; flex-direction: column; padding: 0 4px; text-align: left; }
 .large-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #fff; letter-spacing: 0.5px; }
 .large-card p { font-size: 12px; color: var(--text-sec); font-weight: 400; line-height: 1.6; margin-bottom: 16px; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -158,7 +157,7 @@ section {
 }
 .download-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255,255,255,0.2); }
 
-/* ================= 详情介绍区域 (精确收缩以填满屏幕) ================= */
+/* ================= 详情介绍区域 ================= */
 .product-intro-wrapper { 
     display: grid; grid-template-columns: 5.5fr 4.5fr; gap: 30px; 
     width: 100%; max-width: 1100px; margin: 0 auto 24px auto; align-items: center; 
@@ -198,18 +197,26 @@ section {
 /* About 页专属布局 */
 .about-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; max-width: 1100px; margin: 0 auto; align-items: center; }
 
+/* 抽象出的统一联系卡片样式 */
+.contact-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; display: flex; align-items: center; gap: 20px; transition: 0.3s; backdrop-filter: blur(10px);
+}
+.contact-icon {
+    width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;
+}
+.contact-label { font-size: 11px; color: var(--text-sec); margin-bottom: 4px; }
+.contact-value { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 
 /* ================= 响应式设计 (核心优化部分) ================= */
 
 /* 平板 & 小屏笔记本适配 (<= 1024px) */
 @media (max-width: 1024px) {
-    html { scroll-snap-type: y mandatory; /* 恢复手机端的自动吸附体验 */ }
     .sidebar { display: none; }
     .mobile-nav { display: block; }
     .main { margin-left: 0; }
     
-    /* 移动端恢复流动排版，避免重叠 */
-    section { height: auto; min-height: 100vh; min-height: 100dvh; padding: 60px 40px 100px 40px; overflow: visible; }
+    section { padding: 60px 40px 100px 40px; }
     
     .hero-layout { justify-content: center; text-align: center; }
     .hero-content { align-items: center; text-align: center; }
@@ -234,29 +241,53 @@ section {
 
 /* 手机端深度适配 */
 @media (max-width: 768px) {
-    section { padding: 50px 20px 90px 20px; } 
+    /* 解除垂直居中，改为顶部对齐，防止内容溢出被切 */
+    section { 
+        padding: 50px 20px 80px 20px !important; 
+        height: auto !important; 
+        min-height: 100dvh; 
+        justify-content: flex-start !important; 
+        overflow: visible;
+    }
+    #home { justify-content: center !important; padding: 0 20px !important; } 
     
-    .hero-title { font-size: 38px; margin-bottom: 16px; }
-    .hero-title span { font-size: 42px; margin-bottom: 8px; }
-    .hero-desc { font-size: 14px; }
+    /* 缩小首屏字体与调整留白 */
+    .hero-label { margin-bottom: 12px; }
+    .hero-title { font-size: 30px; margin-bottom: 12px; }
+    .hero-title span { font-size: 34px; margin-bottom: 8px; letter-spacing: 1px; }
+    .hero-desc { font-size: 13px; line-height: 1.6; max-width: 100%; margin-top: 10px; }
     
-    .intro-text-block h2 { font-size: 28px; }
-    .project-info h2 { font-size: 32px !important; margin-bottom: 8px; }
-    .about-layout h2 { font-size: 42px !important; }
+    .intro-text-block h2 { font-size: 26px; }
+    .project-info h2 { font-size: 28px !important; margin-bottom: 8px; }
 
-    /* 关键修复 2：极简压缩手机端“AI养宠顾问”标签，让它不再占一整块巨屏 */
+    /* 手机端彻底隐藏导致遮挡的浮窗小卡片 */
+    .fc-left, .fc-right { display: none !important; }
+
+    /* 标签区高度压缩 */
     .feature-tags-grid { grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
     .f-tag-card { padding: 8px 10px; gap: 6px; flex-direction: column; align-items: flex-start; border-radius: 10px; }
     .f-tag-icon { width: 22px; height: 22px; font-size: 11px; border-radius: 6px; }
     .f-tag-title { font-size: 11px; margin-bottom: 0; }
     .f-tag-desc { font-size: 9px; line-height: 1.3; }
     
-    .download-group { flex-direction: column; width: 100%; }
+    .download-group { flex-direction: column; width: 100%; margin-top: 16px; }
     .download-btn { width: 100%; justify-content: center; }
     
     .mockup-container { height: 280px; }
     .mockup-box { transform: scale(0.65); }
-    .fc-left, .fc-right { display: none; }
+    
+    /* About 页高度与文字缩小 */
+    .about-layout { gap: 20px; }
+    .about-layout h2 { font-size: 34px !important; margin-bottom: 8px; }
+    .about-layout h3 { font-size: 13px; margin-bottom: 16px; }
+    .about-layout p { font-size: 12px; margin-bottom: 12px; line-height: 1.6; }
+    
+    /* 缩小手机端的联系卡片 */
+    .contact-card { padding: 12px 16px; border-radius: 16px; gap: 12px; margin-bottom: 10px; }
+    .contact-icon { width: 32px; height: 32px; }
+    .contact-icon svg { width: 14px; height: 14px; }
+    .contact-label { font-size: 10px; margin-bottom: 2px; }
+    .contact-value { font-size: 14px; }
 }
 
 /* ================= 多图全屏滚动查看器 Modal ================= */
@@ -299,7 +330,7 @@ section {
     </div>
 </div>
 
-<!-- 新增：底部导航栏 (手机端显示) -->
+<!-- 底部导航栏 (手机端显示) -->
 <div class="mobile-nav">
     <div class="mobile-nav-inner">
         <a href="#home" class="nav-link active">
@@ -326,6 +357,7 @@ section {
 </div>
 
 <div class="main">
+    <!-- 首屏 -->
     <section id="home">
         <div class="hero-layout">
             <div class="hero-content">
@@ -342,7 +374,6 @@ section {
     <!-- 项目一：尾伴 -->
     <section id="mobile">
         <div style="display: flex; flex-direction: column; width: 100%; max-width: 1100px; margin: 0 auto;">
-            <!-- 上半部分：标签化产品介绍与样机呈现 -->
             <div class="product-intro-wrapper">
                 <div class="intro-text-block">
                     <div style="margin-bottom: 12px;">
@@ -418,13 +449,12 @@ section {
                     </div>
                     <div class="mockup-box">
                         <span style="font-weight: bold; margin-bottom: 8px; color: #fff;">[ 首页切图预留位 ]</span>
-                        <span style="opacity: 0.6; padding: 0 16px;">请将透明底的手机UI命名为<br>c-home-mockup.png 放入 images 文件夹</span>
+                        <span style="opacity: 0.6; padding: 0 16px;">请将透明底的手机UI命名为<br>c-home-mockup.png 放入 images</span>
                         <img src="./images/c-home-mockup.png" onload="this.previousElementSibling.style.display='none'; this.previousElementSibling.previousElementSibling.style.display='none';" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
             
-            <!-- 下半部分：探索三列网格 -->
             <div class="grid-wrap explore-grid grid-3-col">
                 <div class="grid-card" onclick="openImages(['./images/page_05.png','./images/page_06.png','./images/page_07.png','./images/page_08.png','./images/page_09.png','./images/page_10.png','./images/page_11.png','./images/page_12.png','./images/page_13.png','./images/page_14.png','./images/page_15.png','./images/page_16.png','./images/page_17.png'])">
                     <div class="icon-box" style="background: rgba(255,154,68,0.1); color: #ff9a44;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
@@ -550,9 +580,10 @@ section {
             </div>
             
             <div class="grid-wrap explore-grid grid-3-col" style="width: 100%;">
+                <!-- 关键修改：将中文图片名改为英文 (op-vi.png 等)，防止线上 404 -->
                 <div class="large-card" onclick="openImages(['./images/51.png', './images/52.png', './images/53.png', './images/54.png', './images/55.png', './images/56.png', './images/57.png', './images/58.png', './images/59.png'])">
                     <div class="large-card-img">
-                        <img src="./images/VI封面.png" alt="品牌视觉" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
+                        <img src="./images/op-vi.png" alt="品牌视觉" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
                     </div>
                     <div class="large-card-content">
                         <h4>品牌视觉升级</h4>
@@ -562,7 +593,7 @@ section {
                 </div>
                 <div class="large-card" onclick="openImages(['./images/60.png', './images/61.png', './images/62.png', './images/63.png', './images/64.png', './images/65.png'])">
                     <div class="large-card-img">
-                        <img src="./images/IP封面.png" alt="IP形象" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
+                        <img src="./images/op-ip.png" alt="IP形象" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
                     </div>
                     <div class="large-card-content">
                         <h4>IP与角色设计</h4>
@@ -572,7 +603,7 @@ section {
                 </div>
                 <div class="large-card" onclick="openImages(['./images/66.png', './images/67.png', './images/68.png', './images/69.png', './images/70.png', './images/71.png'])">
                     <div class="large-card-img">
-                        <img src="./images/H5封面.png" alt="运营视觉" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
+                        <img src="./images/op-h5.png" alt="运营视觉" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM0NDQiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2FhYSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5bIOWbvueJh+S4jeWtmOWcqCBdPC90ZXh0Pjwvc3ZnPg=='">
                     </div>
                     <div class="large-card-content">
                         <h4>活动运营视觉</h4>
@@ -614,40 +645,41 @@ section {
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; justify-content: center; gap: 16px; position: relative;">
+            <!-- 这里加上了 gap: 20px; 恢复卡片之间的垂直间距 -->
+            <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px; position: relative;">
                 <div style="font-size: 11px; font-weight: 600; color: var(--text-sec); letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
                     <div style="width: 6px; height: 6px; background: var(--accent); border-radius: 50%;"></div>
                     CONTACT ME
                 </div>
 
-                <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; display: flex; align-items: center; gap: 20px; transition: 0.3s; backdrop-filter: blur(10px);">
-                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
+                <div class="contact-card">
+                    <div class="contact-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                     </div>
                     <div style="overflow: hidden;">
-                        <p style="font-size: 11px; color: var(--text-sec); margin-bottom: 4px;">电子邮箱 Email</p>
-                        <p style="font-size: 18px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">269809965@qq.com</p>
+                        <p class="contact-label">电子邮箱 Email</p>
+                        <p class="contact-value">269809965@qq.com</p>
                     </div>
                 </div>
 
-                <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; display: flex; align-items: center; gap: 20px; transition: 0.3s; backdrop-filter: blur(10px);">
-                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
+                <div class="contact-card">
+                    <div class="contact-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     </div>
                     <div>
-                        <p style="font-size: 11px; color: var(--text-sec); margin-bottom: 4px;">联系电话 Phone</p>
-                        <p style="font-size: 18px; font-weight: 700; letter-spacing: 0.5px;">18621981910</p>
+                        <p class="contact-label">联系电话 Phone</p>
+                        <p class="contact-value">18621981910</p>
                     </div>
                 </div>
 
-                <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; transition: 0.3s; backdrop-filter: blur(10px); position: relative;" id="wechat-card">
+                <div class="contact-card" id="wechat-card" style="justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 20px;">
-                        <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
+                        <div class="contact-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
                         </div>
                         <div>
-                            <p style="font-size: 11px; color: var(--text-sec); margin-bottom: 4px;">微信 WeChat</p>
-                            <p style="font-size: 18px; font-weight: 700; letter-spacing: 0.5px;" id="wechat-id">Eryn_Guo</p>
+                            <p class="contact-label">微信 WeChat</p>
+                            <p class="contact-value" id="wechat-id">Eryn_Guo</p>
                         </div>
                     </div>
                     
@@ -684,12 +716,10 @@ const sections = document.querySelectorAll("section");
 const desktopLinks = document.querySelectorAll(".sidebar .nav-link");
 const mobileLinks = document.querySelectorAll(".mobile-nav .nav-link");
 
-// 1. 使用最稳妥的计算元素位置的方式，替代容易在手机本地预览中失效的 Observer
 function checkActiveTab() {
     let currentId = "";
     sections.forEach(section => {
         const rect = section.getBoundingClientRect();
-        // 只要该板块的中上部出现在屏幕中，即认定为当前板块，绝不失灵
         if (rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.2) {
             currentId = section.getAttribute("id");
         }
@@ -708,12 +738,9 @@ function checkActiveTab() {
     }
 }
 
-// 监听滚动与触摸，确保移动端随时更新标红状态
 window.addEventListener("scroll", checkActiveTab, { passive: true });
 window.addEventListener("touchmove", checkActiveTab, { passive: true });
 window.addEventListener("load", checkActiveTab);
-
-// 2. 彻底移除了之前强行拦截点击的 JS 代码，把控制权还给浏览器的原生点击跳转（不会再没反应了）
 
 function openImages(imageArray) {
     if (!imageArray || imageArray.length === 0) {
